@@ -1,8 +1,8 @@
 #!/usr/bin/python
 import argparse
-import os.path
+import os
 
-PATH_CFG = '/home/rood/Documentos/Teoria/Trabalho/TuringMachine/config.cfg'
+PATH_CFG = os.getcwd()+'/config.cfg'
 class Inputs(object):
 
 	def __init__(self):
@@ -11,27 +11,37 @@ class Inputs(object):
 
 	def writeFile(self, argumentos, tipoOpc):
 		fileCFG = open(PATH_CFG,'w')
-		fileCFG.write(tipoOpc)
-		fileCFG.write('\n')
+		fileCFG.write(tipoOpc+'\n')
+		# fileCFG.write('\n')
+		fileCFG.write(argumentos)
+		fileCFG.close()
+
+	def appendFile(self, argumentos, tipoOpc):
+		fileCFG = open(PATH_CFG,'a')
+		fileCFG.write('\n'+tipoOpc+'\n')
+		# fileCFG.write('\n')
 		fileCFG.write(argumentos)
 		fileCFG.close()
 
 	def readFile(self):
 		# leitura do arquivo config.cfg
 		fileCFG = open(PATH_CFG,'r')
-		lin1 = fileCFG.readline()
-		lin2 = fileCFG.readline()
-		lin3 = fileCFG.readline()
+		
+		linhas = []
+		novaLista = None
+		for l in fileCFG:
+			l = l.replace('\n','')
+			if (l == 'r') or (l == 'v') or (l == 's') or (l == 'h'):
+				if novaLista != None: linhas.append(novaLista)
+				novaLista = []
+				novaLista.append(l)
+			else:
+				novaLista.append(l)
 
-		if (lin1 == 'r') or (lin1 == 'v'):
-			self.pathMT = lin2
-		else:
-			self.numPassMT = lin2
-			self.pathMT = lin3
+		linhas.append(novaLista)				
 		fileCFG.close()
 
-		self.numPassMT = self.numPassMT.replace('\n','')
-		return [self.pathMT, self.numPassMT]
+		return linhas
 
 	def inputArgs(self):
 		#Leitura dos argumentos via linha de comando	
@@ -43,31 +53,33 @@ class Inputs(object):
 
 		parser.add_argument('-step','-s', action = 'store', nargs=2, dest = 'n', required = False, help = 'Mostra n computações passo a passo na tela, depois abre prompt e aguarda nova opção (-r,-v,-s).')
 
+		parser.add_argument('-head', action = 'store', dest = 'head', required = False, help = 'Define os caracteres delimitadores.')
+
 		arguments = parser.parse_args();
 
 		# Salva ultimo comando no arquivo config.cfg
 		if arguments.fileR != None:
 			# Opcao -r selecionada
-			print('fileR')
 			self.writeFile(arguments.fileR, 'r')
 
-		# Salva ultimo comando no arquivo config.cfg	
 		elif arguments.fileV != None:
 			# Opcao -v selecionada
-			print('fileV')
 			self.writeFile(arguments.fileV, 'v')
 
-		# Salva ultimo comando no arquivo config.cfg
 		elif arguments.n != None:
 			# Opcao -s selecionada
 			strAux = arguments.n[0]+'\n'+arguments.n[1]
 			self.writeFile(strAux, 's')
 
+		# Acrescenta no final o resultado do comando -head no arquivo config.cfg
+		if arguments.head != None:
+			print('argumentos HEAD: '+arguments.head)
+			self.appendFile(arguments.head, 'h')
 
 		#Usuario nao informou nenhum parametro
 		#Realiza a leitura do ultimo comando realizado
 		param = []
-		if (arguments.fileR is None) and (arguments.fileV is None) and (arguments.n is None) :
+		if (arguments.fileR is None) and (arguments.fileV is None) and (arguments.n is None) and (arguments.head is None) :
 			#Arquivo config.cfg existe
 			if os.path.isfile(PATH_CFG):
 				param = self.readFile()

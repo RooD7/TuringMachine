@@ -25,16 +25,25 @@ class Output(object):
 		if direcao == 'e':
 			self.direita  = cabecote[1] + direita
 			self.cabecote = '%s%s%s' %(cabecote[0], esquerda[len(esquerda)-1], cabecote[2])
-			self.esquerda = esquerda[:len(esquerda)-2]
+			self.esquerda = esquerda[:len(esquerda)-1]
 		# move para direita
 		elif direcao == 'd':
 			self.esquerda  = esquerda + cabecote[1]
 			self.cabecote  = '%s%s%s' %(cabecote[0], direita[0], cabecote[2])
 			self.direita   = direita[1:]
+		elif direcao == 'i':
+			pass
 
 		# cria uma nova linha para poder atualizar a string line[0]
 		return self.newLine(line[1], line[2], self.esquerda,self.cabecote,self.direita)
 
+	def alteraCabecote(self, line, read, white):
+		if self.getCabecote(line) != read:
+			print('Cabecote - Erro Escrita!')
+			return None
+		cabecote = line[4]
+		self.cabecote = '%s%s%s' %(cabecote[0], white, cabecote[2])
+		return self.newLine(line[1], line[2], line[3], self.cabecote, line[5])
 
 	def newLine(self, bloco, estado, esquerda, cabecote, direita):
 		bloco = '{0:>16}'.format(bloco)

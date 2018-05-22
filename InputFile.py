@@ -19,7 +19,9 @@ class InputFile(object):
 			file.close()
 			
 		else:
-			self.param = None			
+			self.param = None		
+			print('Arquivo informado não existe!')	
+			exit()
 
 		# Chamada de bloco
 		expB1 = r'^[0-9]{1,4}\s[a-zA-Z0-9]{1,16}\s[0-9]{1,4}\n?'

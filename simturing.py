@@ -27,7 +27,7 @@ class simturing:
 			opcao = p[0]
 			steps = p[1]
 			pathFile = p[2]
-		elif (l == 'h'):
+		elif (p[0] == 'h'):
 			head = p[1]
 
 
@@ -43,8 +43,8 @@ class simturing:
 	# --- 2. Rodar baseado nesses argumentos
 	
 	# leitura do arquivo de entrada
+	print(pathFile)
 	paramFile = impFile.inputs(pathFile)
-
 	# executa e imprime apenas o final da fita
 	if opcao == 'r':
 		# pathFile
@@ -58,25 +58,29 @@ class simturing:
 		# steps
 		# pathFile
 		pass
-		
+
 	# print(outLine.newLineClear())
 	# line = [model, self.bloco, self.estado, self.esquerda, self.cabecote, self.direita]
 	# line2 = outLine.newLine(line2[1],line2[2], cabItens[0], cabItens[1], cabItens[2])
 
 	# line1 = outLine.newLine('main','1','E','()','ba')
 	# print(line1[0])
-	# bloco =
-	# estado =
-	# cabecote =
-	line = outLine.newLine('main','10','','[]',palavra)
+	bloco = 'main'
+	estado = '10'
+	esquerda = ''
+	line = outLine.newLine(bloco,estado,esquerda,head,palavra)
 	print(line[0])
 	line = outLine.moveCabecote(line,'d')
 	print(line[0])
-	line = outLine.moveCabecote(line,'e')
+	line = outLine.moveCabecote(line,'d')
+	print(line[0])
+	line = outLine.alteraCabecote(line,'d','D')
 	print(line[0])
 	line = outLine.moveCabecote(line,'e')
 	print(line[0])
-	print('Cabecote: '+outLine.getCabecote(line2))
+	line = outLine.moveCabecote(line,'e')
+	print(line[0])
+	print('Cabecote: '+outLine.getCabecote(line))
 
 	# --- 3. Solicitar novos argumentos (-r,-v,-s)
 	# --- 4. Rodar baseado nesses argumentos

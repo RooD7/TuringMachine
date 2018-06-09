@@ -4,13 +4,18 @@ import os.path
 import InputArgs
 import InputFile
 import Output
-
+import Machine
+import Regex
 
 class simturing:
 
 	impArgs = InputArgs.InputArgs()
 	impFile = InputFile.InputFile()
 	outLine = Output.Output()
+	machine  = Machine.Machine()
+	regex   = Regex.Regex()
+
+	print('Simulador de Máquina de Turing - Version 1.0\nDesenvolvido como trabalho prático para a disciplina de Teoria da Computação.\nAna Paula Silva Cunha, IFMG, 2018.\nRodrigo Sousa Alves, IFMG, 2018.\n')
 
 	# ---------------------------------------------------------------
 	# --- 1. Ler argumentos (-r,-v,-s,-h, pathFile) via linha de comando
@@ -29,9 +34,6 @@ class simturing:
 			pathFile = p[2]
 		elif (p[0] == 'h'):
 			head = p[1]
-
-
-	print('Simulador de Máquina de Turing - Version 1.0\nDesenvolvido como trabalho prático para a disciplina de Teoria da Computação.\nAna Paula Silva Cunha, IFMG, 2018.\nRodrigo Sousa Alves, IFMG, 2018.\n')
 	
 	if paramArgs is None:
 		print('Informe os parâmentros de entrada, não há registro dos últimos parâmetros.')
@@ -43,25 +45,40 @@ class simturing:
 	# --- 2. Rodar baseado nesses argumentos
 	
 	# leitura do arquivo de entrada
-	print(pathFile)
-	paramFile = impFile.inputs(pathFile)
+	linesFile = impFile.inputs(pathFile)
+	blocosCod = []
+	bloco = []
+
+	# Separa o codigo em blocos de codigo a serem executados
+	for l in linesFile:
+		bloco = machine.separaBloco(regex.aplicaRegex(l), l)
+		if (bloco != None):
+			blocosCod.append(bloco)
+
+	for i in blocosCod:
+		print('___NOVO BLOCO___')
+		for j in i:
+			print(j)
+
+
 	# executa e imprime apenas o final da fita
 	if opcao == 'r':
-		# pathFile
+		# Executa a maquina
+		machine.run_01(blocosCod)
 		pass
 	# executa e imprime passo a passo a fita
 	elif opcao == 'v':
-		# pathFile
+		machine.run_02(blocosCod)
 		pass
 	# executa e imprime n passos da fita
 	elif opcao == 's':
-		# steps
-		# pathFile
+		machine.run_03(blocosCod, steps)
 		pass
+	
+
 
 	# print(outLine.newLineClear())
 	# line = [model, self.bloco, self.estado, self.esquerda, self.cabecote, self.direita]
-	# line2 = outLine.newLine(line2[1],line2[2], cabItens[0], cabItens[1], cabItens[2])
 
 	# line1 = outLine.newLine('main','1','E','()','ba')
 	# print(line1[0])
@@ -80,7 +97,21 @@ class simturing:
 	print(line[0])
 	line = outLine.moveCabecote(line,'e')
 	print(line[0])
-	print('Cabecote: '+outLine.getCabecote(line))
+
+	line = 'bloco main 1 !'
+	par = regex.extraiParam(line)
+	print(par)
+	line = '10 moveFim 11'
+	par = regex.extraiParam(line)
+	print(par)
+	line = 'fim'
+	par = regex.extraiParam(line)
+	print(par)
+	line = '12 a -- A i 30'
+	par = regex.extraiParam(line)
+	print(par)
+
+	# print('Cabecote: '+outLine.getCabecote(line))
 
 	# --- 3. Solicitar novos argumentos (-r,-v,-s)
 	# --- 4. Rodar baseado nesses argumentos
@@ -88,3 +119,14 @@ class simturing:
 	#
 
 
+	# extrairParam e executaParam parametros em funcoes separadas?
+	# classe Machine com funcoes do tipo
+	# 	modoR
+	# 		Executa tudo
+	# 		Imprime resultado
+	# 	modoV
+	# 		Executa tudo
+	# 		exibe o passo a passo
+	# 	modoS
+	# 		executa n vezes
+	# 		exibe passo a passo

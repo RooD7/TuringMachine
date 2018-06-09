@@ -40,7 +40,9 @@ class Output(object):
 	def alteraCabecote(self, line, read, white):
 		if self.getCabecote(line) != read:
 			print('Cabecote - Erro Escrita!')
-			return None
+			print('Cabecote('+self.getCabecote(line)+') - read('+read+')')
+			exit()
+
 		cabecote = line[4]
 		self.cabecote = '%s%s%s' %(cabecote[0], white, cabecote[2])
 		return self.newLine(line[1], line[2], line[3], self.cabecote, line[5])

@@ -13,7 +13,8 @@ class simturing:
 	impFile = InputFile.InputFile()
 	outLine = Output.Output()
 	machine  = Machine.Machine()
-	regex   = Regex.Regex()
+	regex = Regex.Regex()
+	
 
 	print('Simulador de Máquina de Turing - Version 1.0\nDesenvolvido como trabalho prático para a disciplina de Teoria da Computação.\nAna Paula Silva Cunha, IFMG, 2018.\nRodrigo Sousa Alves, IFMG, 2018.\n')
 
@@ -26,7 +27,7 @@ class simturing:
 	# extrai parametros recebidos via argumento
 	for p in paramArgs:
 		if (p[0] == 'r') or (p[0] == 'v'):
-			opcao = p[0]
+			opcao = p[0                                              ]
 			pathFile = p[1]
 		elif (p[0] == 's'):
 			opcao = p[0]
@@ -46,33 +47,53 @@ class simturing:
 	
 	# leitura do arquivo de entrada
 	linesFile = impFile.inputs(pathFile)
-	blocosCod = []
-	bloco = []
 
-	# Separa o codigo em blocos de codigo a serem executados
-	for l in linesFile:
-		bloco = machine.separaBloco(regex.aplicaRegex(l), l)
-		if (bloco != None):
-			blocosCod.append(bloco)
+	# separa as linhas de codigo em Blocos de Codigo
+	# blocosCod = []
+	# blocosCod = machine.run_01(palavra, head, linesFile)
 
-	for i in blocosCod:
-		print('___NOVO BLOCO___')
-		for j in i:
-			print(j)
+	# for i in blocosCod:
+	# 	print('___NOVO BLOCO___')
+	# 	for j in i:
+	# 		print(j)
+
+	# for l in linesFile:
+	# 	if regex.aplicaRegex(l) == 'iniBloco':
+	# 		# captura o primeiro estado do bloco
+	# 		print('-----iniBloco')
+	# 		print(l)
+	# 	# comando
+	# 	elif regex.aplicaRegex(l) == 'chaBloco':
+	# 		# captura o proximo estado
+	# 		print('-----chaBloco')
+	# 		print(l)
+	# 	# chamada de bloco
+	# 	elif regex.aplicaRegex(l) == 'fimBloco':
+	# 		print('-----fimBloco')
+	# 		print(l)
+	# 	elif regex.aplicaRegex(l) == 'comando':
+	# 		print('-----comando')
+	# 		print(l)
+	# 	else:
+	# 		print('-----ignorado')
+	# 		print(l)
+
+	# exit(1)
+
 
 
 	# executa e imprime apenas o final da fita
 	if opcao == 'r':
 		# Executa a maquina
-		machine.run_01(blocosCod)
+		machine.run_01(palavra, head, linesFile)
 		pass
 	# executa e imprime passo a passo a fita
 	elif opcao == 'v':
-		machine.run_02(blocosCod)
+		machine.run_02(linesFile)
 		pass
 	# executa e imprime n passos da fita
 	elif opcao == 's':
-		machine.run_03(blocosCod, steps)
+		machine.run_03(linesFile, steps)
 		pass
 	
 
@@ -82,34 +103,34 @@ class simturing:
 
 	# line1 = outLine.newLine('main','1','E','()','ba')
 	# print(line1[0])
-	bloco = 'main'
-	estado = '10'
-	esquerda = ''
-	line = outLine.newLine(bloco,estado,esquerda,head,palavra)
-	print(line[0])
-	line = outLine.moveCabecote(line,'d')
-	print(line[0])
-	line = outLine.moveCabecote(line,'d')
-	print(line[0])
-	line = outLine.alteraCabecote(line,'d','D')
-	print(line[0])
-	line = outLine.moveCabecote(line,'e')
-	print(line[0])
-	line = outLine.moveCabecote(line,'e')
-	print(line[0])
+	# bloco = 'main'
+	# estado = '10'
+	# esquerda = ''
+	# line = outLine.newLine(bloco,estado,esquerda,head,palavra)
+	# print(line[0])
+	# line = outLine.moveCabecote(line,'d')
+	# print(line[0])
+	# line = outLine.moveCabecote(line,'d')
+	# print(line[0])
+	# line = outLine.alteraCabecote(line,'d','D')
+	# print(line[0])
+	# line = outLine.moveCabecote(line,'e')
+	# print(line[0])
+	# line = outLine.moveCabecote(line,'e')
+	# print(line[0])
 
-	line = 'bloco main 1 !'
-	par = regex.extraiParam(line)
-	print(par)
-	line = '10 moveFim 11'
-	par = regex.extraiParam(line)
-	print(par)
-	line = 'fim'
-	par = regex.extraiParam(line)
-	print(par)
-	line = '12 a -- A i 30'
-	par = regex.extraiParam(line)
-	print(par)
+	# line = 'bloco main 1 !'
+	# par = regex.extraiParam(line)
+	# print(par)
+	# line = '10 moveFim 11'
+	# par = regex.extraiParam(line)
+	# print(par)
+	# line = 'fim'
+	# par = regex.extraiParam(line)
+	# print(par)
+	# line = '12 a -- A i 30'
+	# par = regex.extraiParam(line)
+	# print(par)
 
 	# print('Cabecote: '+outLine.getCabecote(line))
 

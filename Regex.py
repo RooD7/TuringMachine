@@ -4,13 +4,13 @@ class Regex(object):
 
 	def __init__(self):
 		# Declaracao de bloco
-		expB1 = r'^bloco\s[a-zA-Z0-9]{1,16}\s[0-9]{1,4}\n?'
+		expB1 = r'^bloco\s[a-zA-Z0-9]{1,16}\s[0-9]{1,4}(( |\t)!( |\t))?(( |\t);( |\t)\w*)?\s?'
 		# Chamada de bloco
-		expB2 = r'^[0-9]{1,4}\s[a-zA-Z0-9]{1,16}\s[0-9]{1,4}\n?'
+		expB2 = r'^[0-9]{1,4} ([a-zA-Z]+) (pare|[0-9]{1,4})([ |\t]*![ |\t]*)?([ |\t]*;[ |\t]*\w+)?\s?'
 		# Fim de bloco
-		expB3 = r'^fim?'
+		expB3 = r'^fim?(( |\t)!( |\t))?(( |\t);( |\t)\w*)?\s?'
 		# Comandos
-		expC1 = r'^[0-9]{1,4}\s(\*|_|[a-zA-Z]{0,16})\s-{2}\s(\*|_|[a-zA-Z]{0,16})\s(i|d|e)\s(\*|[0-9]{1,4})\n?'
+		expC1 = r'^[0-9]{1,4} (\*|_|([a-zA-Z]{1})) -{2} (\*|_|([a-zA-Z]{1})) (i|d|e) (\*|([0-9]{1,4})|pare|retorne)(( |\t)!( |\t))?(( |\t);( |\t)\w)?\s?'
 
 		self.regB1 = re.compile(expB1)
 		self.regB2 = re.compile(expB2)

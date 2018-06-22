@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import Regex
 import Output
 
@@ -129,7 +131,7 @@ class Machine(object):
 			# print('Estado Atual eh '+self.estadoAtual)
 		self.fita[1] = bloco[0]
 		self.fita[2] = self.estadoAtual
-		# print(bloco[0])
+		print('Bloco em execucao: '+bloco[0])
 		# print(self.estadoAtual)
 		# print(self.fita)
 		sair = False
@@ -139,8 +141,8 @@ class Machine(object):
 			instrucoes = self.getInstrucoes(bloco, self.estadoAtual)
 
 			cabecote = self.outLine.getCabecote(self.fita)
-			# print('###### Instrucoes: ')
-			# print(instrucoes)
+			print('###### Instrucoes: ')
+			print(instrucoes)
 			# x = input()
 			for i in instrucoes:
 				# print('###### Instrucao: '+i)
@@ -158,10 +160,12 @@ class Machine(object):
 						if (i.split()[5] == 'retorne'):
 							return 'retorne'
 						elif (i.split()[5] == 'pare'):
+							print('pare')
 							return 'pare'
 						else:
 							# estado atual eh atualizado para proximo estado
 							self.estadoAtual = i.split()[5]
+							break
 
 				# <estado atual> <identificador do bloco> <estado de retorno>
 				# 10 moveFim 11

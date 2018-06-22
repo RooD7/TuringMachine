@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 import argparse
 import os.path
 import InputArgs
@@ -41,7 +42,8 @@ class simturing:
 		print('Informe os parâmentros de entrada, não há registro dos últimos parâmetros.')
 		exit()
 
-	palavra = input('Forneça a palavra inicial: ')
+	# palavra = input('Forneça a palavra inicial: ')
+	palavra = 'baababaaaababaab'
 	
 	# ---------------------------------------------------------------
 	# --- 2. Rodar baseado nesses argumentos

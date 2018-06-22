@@ -14,6 +14,7 @@ class simturing:
 	outLine = Output.Output()
 	machine  = Machine.Machine()
 	regex = Regex.Regex()
+	prints = []
 	
 
 	print('Simulador de Máquina de Turing - Version 1.0\nDesenvolvido como trabalho prático para a disciplina de Teoria da Computação.\nAna Paula Silva Cunha, IFMG, 2018.\nRodrigo Sousa Alves, IFMG, 2018.\n')
@@ -27,11 +28,11 @@ class simturing:
 	# extrai parametros recebidos via argumento
 	for p in paramArgs:
 		if (p[0] == 'r') or (p[0] == 'v'):
-			opcao = p[0                                              ]
+			opcao = p[0]
 			pathFile = p[1]
 		elif (p[0] == 's'):
 			opcao = p[0]
-			steps = p[1]
+			steps = int(p[1])
 			pathFile = p[2]
 		elif (p[0] == 'h'):
 			head = p[1]
@@ -48,53 +49,78 @@ class simturing:
 	# leitura do arquivo de entrada
 	linesFile = impFile.inputs(pathFile)
 
-	# separa as linhas de codigo em Blocos de Codigo
-	# blocosCod = []
-	# blocosCod = machine.run_01(palavra, head, linesFile)
-
-	# for i in blocosCod:
-	# 	print('___NOVO BLOCO___')
-	# 	for j in i:
-	# 		print(j)
-
-	# for l in linesFile:
-	# 	if regex.aplicaRegex(l) == 'iniBloco':
-	# 		# captura o primeiro estado do bloco
-	# 		print('-----iniBloco')
-	# 		print(l)
-	# 	# comando
-	# 	elif regex.aplicaRegex(l) == 'chaBloco':
-	# 		# captura o proximo estado
-	# 		print('-----chaBloco')
-	# 		print(l)
-	# 	# chamada de bloco
-	# 	elif regex.aplicaRegex(l) == 'fimBloco':
-	# 		print('-----fimBloco')
-	# 		print(l)
-	# 	elif regex.aplicaRegex(l) == 'comando':
-	# 		print('-----comando')
-	# 		print(l)
-	# 	else:
-	# 		print('-----ignorado')
-	# 		print(l)
-
-	# exit(1)
-
-
-
 	# executa e imprime apenas o final da fita
 	if opcao == 'r':
 		# Executa a maquina
-		machine.run_01(palavra, head, linesFile)
-		pass
+		prints = machine.run(palavra, head, linesFile)
+		print(prints.pop())
 	# executa e imprime passo a passo a fita
 	elif opcao == 'v':
-		machine.run_02(linesFile)
-		pass
+		prints = machine.run(palavra, head, linesFile)
+		for p in prints:
+			print(p)
 	# executa e imprime n passos da fita
 	elif opcao == 's':
-		machine.run_03(linesFile, steps)
-		pass
+		prints = machine.run(palavra, head, linesFile)
+		cont = steps
+		if int(steps) > int(len(prints)):
+			cont = len(prints)
+		for p in prints:
+			if(cont != 0):
+				print(p)
+				cont -= 1
+
+		while (True):
+			op = input('\nForneça opção (-r, -v, -s) : ')
+			print(op)
+			if op is not '':
+				opcao = op.split()
+				# print('opcao: '+op)
+				# executa e imprime apenas o final da fita
+				if opcao[0] == '-r':
+					# Executa a maquina
+					prints = machine.run(palavra, head, linesFile)
+					if prints == None:
+						print('500 interações')
+					else:
+						print(prints.pop())
+				# executa e imprime passo a passo a fita
+				elif opcao[0] == '-v':
+					prints = machine.run(palavra, head, linesFile)
+					if prints == None:
+						print('500 interações')
+					else:
+						for p in prints:
+							print(p)
+				# executa e imprime n passos da fita
+				elif (opcao[0] == '-s'):
+					prints = machine.run(palavra, head, linesFile)
+					cont = int(opcao[1])
+					steps = int(opcao[1])
+					if cont > int(len(prints)):
+						cont = len(prints)
+					for p in prints:
+						if(cont != 0):
+							print(p)
+							prints.remove(p)
+							cont -= 1
+				else:
+					exit(1)
+			else:
+				print('op '+op)
+				print('con '+str(cont))
+				# if len(opcao) > 1:
+				# 	cont = int(opcao[1])
+				# 	steps = cont
+				# else:
+				cont = steps
+				if cont > int(len(prints)):
+					cont = len(prints)
+				for p in prints:
+					if(cont != 0) or (p is not None):
+						print(p)
+						prints.remove(p)
+						cont -= 1
 	
 
 

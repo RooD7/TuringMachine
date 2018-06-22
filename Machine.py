@@ -11,6 +11,8 @@ class Machine(object):
 		self.paramBloco = []
 		self.blocosCod = []
 		self.estadoAtual = ''
+		self.listaDePrints = []
+		self.contInteracoes = 0
 		self.blocoAtual = None
 		self.fita = []
 		self.pilhaBloco = []
@@ -19,7 +21,7 @@ class Machine(object):
 	def getBloco(self, opcao):
 		for b in self.blocosCod:
 			if b[0] == opcao:
-				print('####  achou o bloco = '+b[0])
+				# print('####  achou o bloco = '+b[0])
 				# print(b)
 				return b
 
@@ -58,87 +60,73 @@ class Machine(object):
 
 	def getInstrucoes(self, bloco, estado):
 		instr = []
-		print('GETInstricoes: '+estado)
-		print('GETInstricoes: '+bloco[0])
+		# print('GETInstricoes: '+estado)
+		# print('GETInstricoes: '+bloco[0])
 		# print(bloco)
 		for b in bloco:
 			# print('linha: '+b)
 			if (self.regex.aplicaRegex(b) == 'comando') and (int(b.split()[0]) == int(estado)):
-				print('comandoo')
 				instr.append(b)
 			elif (self.regex.aplicaRegex(b) == 'chaBloco') and (int(b.split()[0]) == int(estado)):
-				print('chaBlocoo')
 				instr.append(b)
 		return instr
 
 
 
 	# Executa ate o fim
-	def run_01(self, palavra, head, linesFile):
-		# # Ultima linha executada
-		# line = outLine.newLine(bloco,estado,esquerda,head,palavra)
-		# # Imprime Ultima linha executada
+	def run(self, palavra, head, linesFile):
+		self.listaDePrints = []
 		self.blocosCod = self.separaCodEmBlocos(linesFile)
 		self.blocoAtual = self.getBloco('main')
 		self.instrucaoAtual = self.blocoAtual[1]
 		self.fita = self.outLine.newLine(self.blocoAtual[0], self.blocoAtual[1].split()[2], '', head, palavra)
-		print(self.fita[0])
-		print(self.blocoAtual[0])
-		# self.pilhaBloco.append([self.blocoAtual[0], self.blocoAtual[1].split()[2]])
-
-		
+		# print(self.fita[0])
+		# print(self.blocoAtual[0])
+		self.contInteracoes = 0
 		if self.instrucaoAtual is not None:
-			# print('---- EXECUTA LINHA '+str(i))
-			# print('PRE INSTRUCAO ATUAL: '+self.instrucaoAtual)
 			instrucaoPilha = None
 			estadoPilha = ''
 			while(True):
-				print('PILHA')
-				print(self.pilhaBloco)
+				# print('PILHA')
+				# print(self.pilhaBloco)
 				finalizou = self.execBloco(self.blocoAtual, estadoPilha)
+				self.contInteracoes += 1
+				print(self.contInteracoes)
+				if(self.contInteracoes == 500):
+					return None
+				# finaliza a execucao da maquina
 				if finalizou == 'pare':
-					print('PAROU')
+					print('Programa FINALIZADO!')
 					break
+				# volta a executar o ultimo bloco da pilha (continua de onde parou)
 				elif finalizou == 'retorne':
-					print('RETORNOU')
+					# print('RETORNOU')
 					instrucaoPilha = self.pilhaBloco.pop()
 					self.blocoAtual = self.getBloco(instrucaoPilha[0])
 					estadoPilha = instrucaoPilha[1]
 					if estadoPilha == 'pare':
 						print('Programa FINALIZADO!')
+						break
+				# retorna o nome do proximo bloco a ser executado
 				else:
-					# finalizou possui o nome do proximo bloco
-					print('empilhou')
-					# instrucaoPilha = self.pilhaBloco.pop()
-					# self.pilhaBloco.append(instrucaoPilha)
+					# print('EMPILHOU')
 					self.blocoAtual = self.getBloco(finalizou)
 					estadoPilha = ''
-				x = input()
-
-			# print('POS INSTRUCAO ATUAL: '+self.instrucaoAtual)
-			print(self.fita[0])
+				# x = input()
+			self.listaDePrints.append(self.fita[0])
 		else:
  			print('Bloco *main* nao identificado!')
-
-		return self.blocosCod
-
-	# Executa linha por linha
-	def run_02(self, blocosCod):
-		pass
-
-	# Executa n linhas
-	def run_03(self, blocosCod, n):
-		pass
+		return self.listaDePrints
 
 	# retorna a lista das proximas possiveis instrucoes
 	def execBloco(self, bloco, estadoAtual):
 		if estadoAtual == '':
-			print('Estado Atual eh None')
+			# print('Estado Atual eh None')
 			self.estadoAtual = bloco[1].split()[2]
-			print('Estado Atual eh '+self.estadoAtual)
+			# print('Estado Atual eh '+self.estadoAtual)
 		else:
 			self.estadoAtual = estadoAtual
-			print('Estado Atual eh '+self.estadoAtual)
+			# print('Estado Atual eh '+self.estadoAtual)
 		self.fita[1] = bloco[0]
 		self.fita[2] = self.estadoAtual
 		# print(bloco[0])
@@ -146,23 +134,25 @@ class Machine(object):
 		# print(self.fita)
 		sair = False
 		while(not sair):
-			print('###### Estado Atual: '+self.estadoAtual)
-			x = input()
+			# print('###### Estado Atual: '+self.estadoAtual)
+			# x = input()
 			instrucoes = self.getInstrucoes(bloco, self.estadoAtual)
 
 			cabecote = self.outLine.getCabecote(self.fita)
-			print('###### Instrucoes: ')
-			print(instrucoes)
-			x = input()
+			# print('###### Instrucoes: ')
+			# print(instrucoes)
+			# x = input()
 			for i in instrucoes:
-				print('###### Instrucao: '+i)
+				# print('###### Instrucao: '+i)
 				# <estado atual> <simbolo atual> -- <novo simbolo> <movimento> <novo estado>
 				# eh um comando && estado da instrucao corresponde
 				if (self.regex.aplicaRegex(i) == 'comando'):
 					# letra do cabecote corresponde
 					if (i.split()[1] == cabecote) or (i.split()[1] == '*'):
-						# print('COMANDO:: '+i)
+						# print('###Executa ### Instrucao: '+i)
+						self.fita[2] = self.estadoAtual
 						self.fita = self.outLine.alteraCabecote(self.fita, i.split()[1], i.split()[3])
+						self.listaDePrints.append(self.fita[0])
 						print(self.fita[0])
 						self.fita = self.outLine.moveCabecote(self.fita, i.split()[4])
 						if (i.split()[5] == 'retorne'):
@@ -179,15 +169,13 @@ class Machine(object):
 					atual = i.split()[0]
 					nomeBloco = i.split()[1]
 					retorno = i.split()[2]
-					if (retorno == 'retorne'):
-						return 'retorne'
-					elif (retorno == 'pare'):
-						return 'pare'
-					else:
-						# estado atual eh atualizado para proximo estado
-						self.pilhaBloco.append([bloco[0], retorno])
-						print('Empilhou: '+bloco[0]+' - '+retorno)
-						return nomeBloco
+
+					print('chamou bloco: '+i)
+
+					# estado atual eh atualizado para proximo estado
+					self.pilhaBloco.append([bloco[0], retorno])
+					# print('Empilhou: '+bloco[0]+' - '+retorno)
+					return nomeBloco
 			if sair:
 				break
 

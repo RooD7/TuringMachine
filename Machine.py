@@ -93,7 +93,7 @@ class Machine(object):
 				# print(self.pilhaBloco)
 				finalizou = self.execBloco(self.blocoAtual, estadoPilha)
 				self.contInteracoes += 1
-				print(self.contInteracoes)
+				# print(self.contInteracoes)
 				if(self.contInteracoes == 500):
 					return None
 				# finaliza a execucao da maquina
@@ -131,18 +131,18 @@ class Machine(object):
 			# print('Estado Atual eh '+self.estadoAtual)
 		self.fita[1] = bloco[0]
 		self.fita[2] = self.estadoAtual
-		print('Bloco em execucao: '+bloco[0])
+		# print('Bloco em execucao: '+bloco[0])
 		# print(self.estadoAtual)
 		# print(self.fita)
 		sair = False
-		while(not sair):
+		while(True):
 			# print('###### Estado Atual: '+self.estadoAtual)
 			# x = input()
 			instrucoes = self.getInstrucoes(bloco, self.estadoAtual)
 
 			cabecote = self.outLine.getCabecote(self.fita)
-			print('###### Instrucoes: ')
-			print(instrucoes)
+			# print('###### Instrucoes: ')
+			# print(instrucoes)
 			# x = input()
 			for i in instrucoes:
 				# print('###### Instrucao: '+i)
@@ -152,15 +152,20 @@ class Machine(object):
 					# letra do cabecote corresponde
 					if (i.split()[1] == cabecote) or (i.split()[1] == '*'):
 						# print('###Executa ### Instrucao: '+i)
+						x = i.split()
+						for s in x:
+							if s is '!':
+								sair = True
+
 						self.fita[2] = self.estadoAtual
 						self.fita = self.outLine.alteraCabecote(self.fita, i.split()[1], i.split()[3])
 						self.listaDePrints.append(self.fita[0])
-						print(self.fita[0])
+						# print(self.fita[0])
 						self.fita = self.outLine.moveCabecote(self.fita, i.split()[4])
 						if (i.split()[5] == 'retorne'):
 							return 'retorne'
 						elif (i.split()[5] == 'pare'):
-							print('pare')
+							# print('pare')
 							return 'pare'
 						else:
 							# estado atual eh atualizado para proximo estado
@@ -174,14 +179,19 @@ class Machine(object):
 					nomeBloco = i.split()[1]
 					retorno = i.split()[2]
 
-					print('chamou bloco: '+i)
+					x = i.split()
+					for s in x:
+						if s is '!':
+							sair = True
+					# print('chamou bloco: '+i)
 
 					# estado atual eh atualizado para proximo estado
 					self.pilhaBloco.append([bloco[0], retorno])
 					# print('Empilhou: '+bloco[0]+' - '+retorno)
 					return nomeBloco
-			if sair:
-				break
-
+				if sair is True:
+					for x in self.listaDePrints:
+						print(x)
+						exit(1)
 		return None
 

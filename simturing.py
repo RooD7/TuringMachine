@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 import argparse
 import os.path
 import InputArgs
@@ -16,6 +17,7 @@ class simturing:
 	machine  = Machine.Machine()
 	regex = Regex.Regex()
 	prints = []
+	numSteps = 0
 	
 
 	print('Simulador de Máquina de Turing - Version 1.0\nDesenvolvido como trabalho prático para a disciplina de Teoria da Computação.\nAna Paula Silva Cunha, IFMG, 2018.\nRodrigo Sousa Alves, IFMG, 2018.\n')
@@ -42,8 +44,11 @@ class simturing:
 		print('Informe os parâmentros de entrada, não há registro dos últimos parâmetros.')
 		exit()
 
-	# palavra = input('Forneça a palavra inicial: ')
-	palavra = 'baababaaaababaab'
+	palavra = input('Forneça a palavra inicial: ')
+	# palavra = 'baab'
+	if palavra == '':
+		print('Forneça uma palavra.')
+		exit(1)
 	
 	# ---------------------------------------------------------------
 	# --- 2. Rodar baseado nesses argumentos
@@ -52,25 +57,27 @@ class simturing:
 	linesFile = impFile.inputs(pathFile)
 
 	# executa e imprime apenas o final da fita
+	prints = machine.run(palavra, head, linesFile)
 	if opcao == 'r':
 		# Executa a maquina
-		prints = machine.run(palavra, head, linesFile)
 		print(prints.pop())
 	# executa e imprime passo a passo a fita
 	elif opcao == 'v':
-		prints = machine.run(palavra, head, linesFile)
+		# prints = machine.run(palavra, head, linesFile)
 		for p in prints:
 			print(p)
 	# executa e imprime n passos da fita
 	elif opcao == 's':
-		prints = machine.run(palavra, head, linesFile)
+		# prints = machine.run(palavra, head, linesFile)
+		steps = int(steps)
+		if steps > int(len(prints)):
+			steps = len(prints)-1
 		cont = steps
-		if int(steps) > int(len(prints)):
-			cont = len(prints)
 		for p in prints:
 			if(cont != 0):
 				print(p)
 				cont -= 1
+		numSteps += steps
 
 		while (True):
 			op = input('\nForneça opção (-r, -v, -s) : ')
@@ -81,14 +88,14 @@ class simturing:
 				# executa e imprime apenas o final da fita
 				if opcao[0] == '-r':
 					# Executa a maquina
-					prints = machine.run(palavra, head, linesFile)
+					# prints = machine.run(palavra, head, linesFile)
 					if prints == None:
 						print('500 interações')
 					else:
 						print(prints.pop())
 				# executa e imprime passo a passo a fita
 				elif opcao[0] == '-v':
-					prints = machine.run(palavra, head, linesFile)
+					# prints = machine.run(palavra, head, linesFile)
 					if prints == None:
 						print('500 interações')
 					else:
@@ -96,33 +103,44 @@ class simturing:
 							print(p)
 				# executa e imprime n passos da fita
 				elif (opcao[0] == '-s'):
-					prints = machine.run(palavra, head, linesFile)
-					cont = int(opcao[1])
+					# prints = machine.run(palavra, head, linesFile)
 					steps = int(opcao[1])
-					if cont > int(len(prints)):
-						cont = len(prints)
+					if steps > int(len(prints)):
+						steps = len(prints)-1
+					cont = steps
+					cont2 = 0
 					for p in prints:
-						if(cont != 0):
-							print(p)
-							prints.remove(p)
-							cont -= 1
+						if cont2 <= numSteps:
+							cont2 += 1
+						else:
+							# print('if not none -s')
+							if(cont != 0):
+								print(p)
+								cont -= 1
+					numSteps += steps
 				else:
 					exit(1)
 			else:
-				print('op '+op)
-				print('con '+str(cont))
+				# print('op '+op)
+				# print('con '+str(cont))
 				# if len(opcao) > 1:
 				# 	cont = int(opcao[1])
 				# 	steps = cont
 				# else:
 				cont = steps
-				if cont > int(len(prints)):
-					cont = len(prints)
+				if steps > int(len(prints)):
+					steps = len(prints)-1
+				cont = steps
+				cont2 = 0
 				for p in prints:
-					if(cont != 0) or (p is not None):
-						print(p)
-						prints.remove(p)
-						cont -= 1
+					if cont2 <= numSteps:
+						cont2 += 1
+					else:
+						# print('if not none -s')/
+						if(cont != 0):
+							print(p)
+							cont -= 1
+				numSteps += steps
 	
 
 

@@ -1,3 +1,6 @@
+; MT nao deterministica que aceita a linguagem b*ab* ou c*ac*
+; retirado do material Cap4: Máquinas de Turing
+
 bloco main 1
 01 b -- B d 01
 01 c -- C d 01

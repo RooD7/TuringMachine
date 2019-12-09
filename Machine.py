@@ -250,6 +250,8 @@ class Machine(object):
 
 	def getNaoDeterminismo(self, intrs, letra):
 		det = []
+		if intrs == []:
+			return []
 		for i in intrs:
 			# letra do cabecote corresponde
 			if (self.regex.aplicaRegex(i) == 'chaBloco'):
@@ -283,6 +285,31 @@ class Machine(object):
 			id2 += 1
 		return(pilha,id2-1)
 
+	def addFilaDeInstrIni(self, pilha, idd, instr, fita):
+		id2 = idd
+		for t in instr:
+			pilha.append((id2,t,fita))
+			#Copia o bloco atual pro novo id
+			if id2 != idd:
+				# blocos = copy.deepcopy(self.pilhaBloco)
+				# if blocos != None:
+				# 	for b in blocos:
+				# 		self.addPilhaBloco(id2, b)
+				blocos = self.getPilhaBloco(idd-1)
+				if blocos != None:
+					for b in blocos:
+						self.addPilhaBloco(id2, b)
+				#Copia o print atual pro novo id
+				if self.listaDePrints != []:
+					prints = []
+					for p in self.listaDePrints:
+						if p[0] == idd-1:
+							prints.append((id2, p[1]))
+					self.listaDePrints = prints + self.listaDePrints
+				self.contInteracoes[id2] = 0
+			id2 += 1
+		return(pilha,id2-1)
+
 	def addPilhaBloco(self, idd, bloco):
 		for pb in self.pilhaBloco:
 			if pb[0] == idd:
@@ -292,8 +319,8 @@ class Machine(object):
 
 	def getItemPilhaBloco(self, idd):
 		for pb in self.pilhaBloco:
-			if pb[1] != []:
-			# if pb[0] == idd and pb[1] != []:
+			# if pb[1] != []:
+			if pb[0] == idd and pb[1] != []:
 				return pb[1].pop()
 		return None
 
@@ -311,6 +338,8 @@ class Machine(object):
 		# self.retornoBloco = dict
 		self.idd = 0
 		self.ignora = []
+		self.falhou = False
+		self.backup = []
 		self.blocosCod = self.separaCodEmBlocos(linesFile)
 		self.blocoAtual = self.getBloco('main')
 		self.instrucaoAtual = self.blocoAtual[1]
@@ -321,10 +350,17 @@ class Machine(object):
 		self.estadoAtual = self.blocoAtual[1].split()[2]
 		while(True):
 			self.instrucaoAtual = self.getNaoDeterminismo(self.getInstrucoes(self.blocoAtual,self.estadoAtual),self.fita.getHead()[1])
-			if self.instrucaoAtual is not []:
+			if self.instrucaoAtual != []:
 				(self.filaDeInstr,self.idd) = self.addFilaDeInstr(self.filaDeInstr, self.idd, self.instrucaoAtual, copy.deepcopy(self.fita))
 				# print(self.filaDeInstr)
 				while self.filaDeInstr != []:
+					if self.falhou:
+						[self.fita, self.listaDePrints, self.pilhaBloco, self.idd, self.filaDeInstr] = self.backup
+						self.filaDeInstr.pop(0)
+						self.falhou = False
+					if len(self.filaDeInstr) > 1:
+						self.backup = [copy.deepcopy(self.fita),copy.deepcopy(self.listaDePrints),copy.deepcopy(self.pilhaBloco), self.idd, copy.deepcopy(self.filaDeInstr)]
+						self.falhou = False
 					t = self.filaDeInstr.pop(0)
 					(idd, instrucao,fi) = t
 					if idd in self.ignora:
@@ -340,6 +376,7 @@ class Machine(object):
 						for p in self.pilhaBloco:
 							if p[0] == idd:
 								self.pilhaBloco.remove(p)
+						self.falhou = True
 					else:
 						# self.fita.setRibbon(fit)
 						self.contInteracoes[idd] += 1
@@ -364,11 +401,17 @@ class Machine(object):
 									self.estadoAtual = retornoPilha[1]
 									if self.filaDeInstr != []:
 										self.instrucaoAtual = self.getNaoDeterminismo(self.getInstrucoes(self.blocoAtual,self.estadoAtual),self.fita.getHead()[1])
-										if self.instrucaoAtual is not []:
+										if self.instrucaoAtual != []:
 											(self.filaDeInstr,self.idd) = self.addFilaDeInstr(self.filaDeInstr, self.idd, self.instrucaoAtual, copy.deepcopy(self.fita))
 						#('newState', instrucao.split()[5], newRibbon)
 						elif comando == 'newState':
 							self.estadoAtual = params
+							# if self.filaDeInstr != []:
+							self.instrucaoAtual = self.getNaoDeterminismo(self.getInstrucoes(self.blocoAtual,self.estadoAtual),self.fita.getHead()[1])
+							if self.instrucaoAtual != []:
+								(self.filaDeInstr,self.idd) = self.addFilaDeInstrIni(self.filaDeInstr, self.idd, self.instrucaoAtual, copy.deepcopy(self.fita))
+							else:
+								self.falhou = True
 						# ('chaBloco', [nomeBloco, retorno], fita)
 						elif comando == 'chaBloco':
 							# params = [nomeBloco, antigoBloco, retorno]
@@ -382,6 +425,10 @@ class Machine(object):
 							self.blocoAtual = self.getBloco(params[0])
 							self.estadoAtual = params[1]
 						# self.listaDePrints.append((self.idd, self.fita.getPrint()))
+			else:
+				self.instrucaoAtual = self.getNaoDeterminismo(self.getInstrucoes(self.blocoAtual,self.estadoAtual),self.fita.getHead()[1])
+				if self.instrucaoAtual == []:
+					return self.listaDePrints
 		return self.listaDePrints
 
 	# retorna a lista das proximas possiveis instrucoes

@@ -58,6 +58,7 @@ class simturing:
 
 	# executa e imprime apenas o final da fita
 	prints = machine.run(palavra, head, linesFile)
+
 	if opcao == 'r':
 		# Executa a maquina
 		print(prints.pop())

@@ -479,9 +479,24 @@ class Machine(object):
 			nomeBloco = instrucao.split()[1]
 			proxEstado = instrucao.split()[2]
 
+
 			# estado atual eh atualizado para proximo estado
 			# self.pilhaBloco.append([self.blocoAtual[0], retorno])
 			# print('Empilhou: '+bloco[0]+' - '+retorno)
 
 			return ('iniBloco', [nomeBloco, proxEstado])
 		return (None, None)
+
+	def ordenaPrint(self, prints):
+		idd = 0
+		prin = []
+		prints = copy.deepcopy(prints)
+		while(True):
+			if len(prints) == 0:
+				break
+			for p in prints:
+				if p[0] == idd:
+					prin.append(p)
+					prints.remove(p)
+			idd += 1
+		return prin

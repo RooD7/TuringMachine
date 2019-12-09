@@ -20,7 +20,7 @@ class simturing:
 	numSteps = 0
 	
 
-	print('Simulador de Máquina de Turing - Version 1.0\nDesenvolvido como trabalho prático para a disciplina de Teoria da Computação.\nAna Paula Silva Cunha, IFMG, 2018.\nRodrigo Sousa Alves, IFMG, 2018.\n')
+	print('Simulador de Máquina de Turing - Version 2.0\nDesenvolvido como trabalho prático para a disciplina de Teoria da Computação.\nAna Paula Silva Cunha, IFMG, 2018.\nRodrigo Sousa Alves, IFMG, 2018.\n')
 
 	# ---------------------------------------------------------------
 	# --- 1. Ler argumentos (-r,-v,-s,-h, pathFile) via linha de comando
@@ -69,42 +69,62 @@ class simturing:
 	# executa e imprime n passos da fita
 	elif opcao == 's':
 		# prints = machine.run(palavra, head, linesFile)
-		steps = int(steps)
-		if steps > int(len(prints)):
-			steps = len(prints)-1
-		cont = steps
-		for p in prints:
-			if(cont != 0):
-				print(p)
-				cont -= 1
-		numSteps += steps
+		if prints == None:
+			print('500 interações')
+		else:
+			steps = int(steps)
+			if steps > int(len(prints)):
+				steps = len(prints)-1
+			cont = steps
+			for p in prints:
+				if(cont != 0):
+					print(p)
+					cont -= 1
+			numSteps += steps
 
-		while (True):
-			op = input('\nForneça opção (-r, -v, -s) : ')
-			print(op)
-			if op is not '':
-				opcao = op.split()
-				# print('opcao: '+op)
-				# executa e imprime apenas o final da fita
-				if opcao[0] == '-r':
-					# Executa a maquina
-					# prints = machine.run(palavra, head, linesFile)
-					if prints == None:
-						print('500 interações')
-					else:
+			while (True):
+				op = input('\nForneça opção (-r, -v, -s) : ')
+				print(op)
+				if op is not '':
+					opcao = op.split()
+					# print('opcao: '+op)
+					# executa e imprime apenas o final da fita
+					if opcao[0] == '-r':
+						# Executa a maquina
+						# prints = machine.run(palavra, head, linesFile)
 						print(prints.pop())
-				# executa e imprime passo a passo a fita
-				elif opcao[0] == '-v':
-					# prints = machine.run(palavra, head, linesFile)
-					if prints == None:
-						print('500 interações')
-					else:
+					# executa e imprime passo a passo a fita
+					elif opcao[0] == '-v':
+						# prints = machine.run(palavra, head, linesFile)
 						for p in prints:
 							print(p)
-				# executa e imprime n passos da fita
-				elif (opcao[0] == '-s'):
-					# prints = machine.run(palavra, head, linesFile)
-					steps = int(opcao[1])
+					# executa e imprime n passos da fita
+					elif (opcao[0] == '-s'):
+						# prints = machine.run(palavra, head, linesFile)
+						steps = int(opcao[1])
+						if steps > int(len(prints)):
+							steps = len(prints)-1
+						cont = steps
+						cont2 = 0
+						for p in prints:
+							if cont2 <= numSteps:
+								cont2 += 1
+							else:
+								# print('if not none -s')
+								if(cont != 0):
+									print(p)
+									cont -= 1
+						numSteps += steps
+					else:
+						exit(1)
+				else:
+					# print('op '+op)
+					# print('con '+str(cont))
+					# if len(opcao) > 1:
+					# 	cont = int(opcao[1])
+					# 	steps = cont
+					# else:
+					cont = steps
 					if steps > int(len(prints)):
 						steps = len(prints)-1
 					cont = steps
@@ -113,34 +133,11 @@ class simturing:
 						if cont2 <= numSteps:
 							cont2 += 1
 						else:
-							# print('if not none -s')
+							# print('if not none -s')/
 							if(cont != 0):
 								print(p)
 								cont -= 1
 					numSteps += steps
-				else:
-					exit(1)
-			else:
-				# print('op '+op)
-				# print('con '+str(cont))
-				# if len(opcao) > 1:
-				# 	cont = int(opcao[1])
-				# 	steps = cont
-				# else:
-				cont = steps
-				if steps > int(len(prints)):
-					steps = len(prints)-1
-				cont = steps
-				cont2 = 0
-				for p in prints:
-					if cont2 <= numSteps:
-						cont2 += 1
-					else:
-						# print('if not none -s')/
-						if(cont != 0):
-							print(p)
-							cont -= 1
-				numSteps += steps
 	
 
 
